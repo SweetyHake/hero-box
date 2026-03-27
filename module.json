@@ -1,7 +1,7 @@
 {
   "id": "cs-hero-box",
   "title": "Hero in a Box",
-  "version": "13.1.5",
+  "version": "1.0.0",
   "compatibility": {
     "minimum": "12",
     "verified": "13"

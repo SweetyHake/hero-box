@@ -7,6 +7,7 @@ import { groupTagsByCategory, filterByTagGroups } from '../../utils/tags.mjs';
 import { parseTagsFromFileName } from '../../utils/filepicker.mjs';
 import { filterWorker } from '../../utils/filter-worker-bridge.mjs';
 import { CollapsedGroupsManager } from '../../utils/collapsed-groups.mjs';
+import { MODE } from '../import-image/image-import.mjs';
 
 // handles everything on the images tab — filtering, selection, virtual scroll, popups
 export class ImagesTab {
@@ -241,7 +242,7 @@ export class ImagesTab {
   async onAddImage() {
     if (!this.#app.selectedJournalId) return;
     const { ImageImport } = await import('../import-image/image-import.mjs');
-    const success = await ImageImport.open(this.#app.selectedJournalId);
+    const success = await ImageImport.open(this.#app.selectedJournalId, MODE.SINGLE);
     if (success) this.#refreshAfterChange();
   }
 
@@ -249,7 +250,7 @@ export class ImagesTab {
   async onImportFromFolder() {
     if (!this.#app.selectedJournalId) return;
     const { ImageImport } = await import('../import-image/image-import.mjs');
-    const success = await ImageImport.open(this.#app.selectedJournalId);
+    const success = await ImageImport.open(this.#app.selectedJournalId, MODE.FOLDER);
     if (success) this.#refreshAfterChange();
   }
 
@@ -729,7 +730,7 @@ export class ImagesTab {
     const tagsDisplay = img.tags.length > 0
       ? img.tags.map(t => tag.getLabel(t)).join(', ') : '';
     const tagsHtml = tagsDisplay
-      ? `<strong>Tags:</strong> ${tagsDisplay}`
+      ? `<strong>${game.i18n.localize('cs-hero-box.dataManager.tagsTitle')}:</strong> ${tagsDisplay}`
       : `<em>${game.i18n.localize('cs-hero-box.editor.noTags')}</em>`;
     const sourceName = source.getSourceName(img.sourceId);
     const sourceHtml = sourceName

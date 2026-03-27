@@ -5,7 +5,7 @@ import { getJournalForWrite } from '../../utils/source.mjs';
 import { tagIndex, tag } from '../../services/index.mjs';
 import { BaseFormApplication } from '../base/base.mjs';
 
-const MODE = {
+export const MODE = {
   SINGLE: 'single',
   FOLDER: 'folder',
 };
@@ -57,18 +57,19 @@ export class ImageImport extends BaseFormApplication {
   #scale = DEFAULT_IMAGE_DATA.scale;
   #dynamicRing = DEFAULT_IMAGE_DATA.dynamicRing;
 
-  constructor(journalId, onSave = null) {
+  constructor(journalId, mode = MODE.SINGLE, onSave = null) {
     super();
     this.#journalId = journalId;
     this.#onSave = onSave;
+    this.#mode = mode;
   }
 
   // open the dialog and return a promise that resolves when done
-  static async open(journalId) {
+  static async open(journalId, mode = MODE.SINGLE) {
     const { createSingleResolvePromise } = await import('../../utils/promise.mjs');
     const { promise, resolve } = createSingleResolvePromise();
 
-    const app = new ImageImport(journalId, () => resolve(true));
+    const app = new ImageImport(journalId, mode, () => resolve(true));
 
     const originalClose = app.close.bind(app);
     app.close = async (opts = {}) => {

@@ -1,6 +1,41 @@
 const moduleId = 'cs-hero-box';
 // TODO: change to the actual changelog url
-const CHANGELOG_URL = 'https://raw.githubusercontent.com/help/cs-hero-box/main/CHANGELOG.md';
+const CHANGELOG_EN_URL = 'https://raw.githubusercontent.com/help/cs-hero-box/main/CHANGELOG.en.md';
+const CHANGELOG_RU_URL = 'https://raw.githubusercontent.com/help/cs-hero-box/main/CHANGELOG.ru.md';
+
+function isRussianLocale(lang) {
+  return typeof lang === 'string' && lang.toLowerCase().startsWith('ru');
+}
+
+function getChangelogCandidates() {
+  const lang = game.i18n?.lang ?? 'en';
+  const ru = isRussianLocale(lang);
+
+  if (ru) {
+    return [
+      CHANGELOG_RU_URL,
+      `modules/${moduleId}/CHANGELOG.ru.md`,
+    ];
+  }
+
+  return [
+    CHANGELOG_EN_URL,
+    `modules/${moduleId}/CHANGELOG.en.md`,
+  ];
+}
+
+async function fetchFirstAvailable(paths, options = undefined) {
+  for (const path of paths) {
+    try {
+      const response = await fetch(path, options);
+      if (response.ok) {
+        return await response.text();
+      }
+    } catch (e) {}
+  }
+
+  return null;
+}
 
 // register the version setting to track when we last showed the changelog
 Hooks.once("init", async () => {
@@ -26,25 +61,8 @@ Hooks.once("ready", async () => {
 
     if (savedVersion !== moduleVersion) {
 
-      let markdown = null;
-
-      // try fetching from github first for the latest version
-      try {
-        const response = await fetch(CHANGELOG_URL, { cache: "no-store" });
-        if (response.ok) {
-          markdown = await response.text();
-        }
-      } catch (e) {}
-
-      // fall back to local file if github is unreachable
-      if (!markdown) {
-        try {
-          const response = await fetch(`modules/${moduleId}/CHANGELOG.md`);
-          if (response.ok) {
-            markdown = await response.text();
-          }
-        } catch (e) {}
-      }
+      // try language-specific changelog first, then generic fallback
+      const markdown = await fetchFirstAvailable(getChangelogCandidates(), { cache: "no-store" });
 
       if (!markdown) {
         console.error(`[${moduleId}] Не удалось загрузить CHANGELOG.md`);
@@ -77,18 +95,20 @@ Hooks.once("ready", async () => {
         },
         content: `
             <div style="
-              height: 600px; 
+              max-height: 600px; 
               max-width: 800px;
               overflow-y: auto; 
               padding: 15px;
-              font-size: 14px;
+              font-size: 0.875rem;
             ">
               ${htmlContent}
             </div>
         `,
         buttons: [{
           action: "noShow",
-          label: game.i18n.localize(`${moduleId}.changelog.dismiss`) || "Не показывать до следующего обновления",
+          label: game.i18n.localize(`${moduleId}.changelog.dismiss`) ||
+            game.i18n.localize(`${moduleId}.changelog.doNotShow`) ||
+            "Не показывать до следующего обновления",
           callback: () => {
             game.settings.set(moduleId, "version", game.modules.get(moduleId).version);
           }

@@ -78,7 +78,8 @@
       "allCategories": "Категории",
       "testResult": "Сгенерировано: {name}",
       "createActor": "Создать актёра",
-      "refreshTags": "Обновить теги из имён файлов"
+      "refreshTags": "Обновить теги из имён файлов",
+      "tagsTitle": "Теги"
     },
 
     "imagePicker": {

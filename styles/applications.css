@@ -225,6 +225,9 @@
 /* ========================================
    data manager — the main beast
    ======================================== */
+#cs-hero-box-data-manager .window-content {
+  padding-block-start: 0;
+}
 
 /* hide the default title, we use tabs instead */
 .cs-hero-box-data-manager .window-header {
@@ -233,10 +236,6 @@
 
 .cs-hero-box-data-manager .window-header .window-title {
   display: none;
-}
-
-.cs-hero-box-data-manager .window-content {
-  padding: 0;
 }
 
 .cs-hero-box-data-manager {
@@ -254,6 +253,7 @@
   justify-content: center;
   gap: 0;
   padding: 0;
+  margin-inline: var(--cs-hero-box-spacing-sm);
   border-top: 1px solid var(--cs-hero-box-border-color);
   border-bottom: 1px solid var(--cs-hero-box-border-color);
   flex-shrink: 0;
@@ -302,7 +302,8 @@
   display: flex;
   align-items: center;
   gap: var(--cs-hero-box-spacing-sm);
-  padding: var(--cs-hero-box-spacing-sm);
+  padding-block: var(--cs-hero-box-spacing-sm);
+  margin-inline: var(--cs-hero-box-spacing-sm);
   border-bottom: 1px solid var(--cs-hero-box-border-color);
   flex-shrink: 0;
   background: var(--cs-hero-box-bg-primary);
@@ -344,8 +345,10 @@
 .cs-hero-box-data-manager__sidebar {
   width: var(--cs-hero-box-sidebar-width);
   border-right: 1px solid var(--cs-hero-box-border-color);
-  padding: var(--cs-hero-box-spacing-sm);
-  overflow-y: scroll;
+  padding: var(--cs-hero-box-spacing-sm) 0 var(--cs-hero-box-spacing-sm) var(--cs-hero-box-spacing-sm);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
   display: flex;
   flex-direction: column;
   gap: var(--cs-hero-box-spacing-sm);
@@ -502,8 +505,10 @@
 /* scrollable image grid container */
 .cs-hero-box-data-manager__grid-container {
   flex: 1;
-  overflow-y: scroll;
-  padding: var(--cs-hero-box-spacing-sm);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding: var(--cs-hero-box-spacing-sm) 0 var(--cs-hero-box-spacing-sm) var(--cs-hero-box-spacing-sm);
   min-height: 0;
   background: var(--cs-hero-box-bg-primary);
 }
@@ -959,10 +964,19 @@
    image import dialog
    ======================================== */
 
+#cs-hero-box-image-import .window-content {
+  padding-block-start: 0;
+}
+
 .cs-hero-box-image-import {
   padding: var(--cs-hero-box-spacing-sm);
   background: var(--cs-hero-box-bg-primary);
   color: var(--cs-hero-box-text-primary);
+}
+
+.cs-hero-box-image-import .form-group:not(.cs-hero-box-image-import__settings) label {
+  display: block;
+  margin-block-end: var(--cs-hero-box-spacing-xs);
 }
 
 .cs-hero-box-image-import input {
@@ -999,9 +1013,14 @@
   border-right: none;
 }
 
+.cs-hero-box-image-import__tab:first-child {
+  border-left: none;
+}
+
 .cs-hero-box-image-import__tab.active {
   background: var(--cs-hero-box-bg-primary);
   color: var(--color-border-highlight);
+  font-weight: bold;
 }
 
 /* token/portrait preview area in import dialog */
@@ -1015,6 +1034,9 @@
 /* ========================================
    editor — image/name/tag editing dialog
    ======================================== */
+#cs-hero-box-editor .window-content {
+  padding-block-start: 0;
+}
 
 .cs-hero-box-editor {
   display: flex;
@@ -1409,4 +1431,13 @@
   appearance: auto;
   background: var(--cs-hero-box-bg-tertiary);
   border: 1px solid var(--cs-hero-box-border-color);
+}
+
+.cs-hero-box-data-manager,
+.cs-hero-box-image-import {
+  button.active,
+  button:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }

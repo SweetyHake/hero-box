@@ -125,6 +125,11 @@
   font-size: var(--cs-hero-box-font-size-lg);
 }
 
+.cs-hero-box-hint {
+  font-size: var(--cs-hero-box-font-size-sm);
+  color: var(--cs-hero-box-text-muted);
+}
+
 /* small pill badge */
 .cs-hero-box-badge {
   font-size: var(--cs-hero-box-font-size-sm);

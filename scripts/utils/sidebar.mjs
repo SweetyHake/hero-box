@@ -107,7 +107,7 @@ export function buildSidebarCategories(options = {}) {
     .filter(t => activeRaces.size === 0 || activeRaces.has(t.parentRaceId))
     .map(t => ({
       id: t.id,
-      label: tag.getLabel(t.id),
+      label: `${tag.getLabel(t.parentRaceId)}: ${tag.getLabel(t.id)}`,
       count: tagCounts.get(t.id) ?? 0,
       isActive: activeTagsSet.has(t.id),
     }));
@@ -135,6 +135,10 @@ export function buildSidebarCategories(options = {}) {
       tags: roles.filter(t => t.count > 0 || showCategoryFilter),
     };
   }
+
+  Object.values(categories).forEach(category => {
+    category.tags?.sort((a, b) => a.label.localeCompare(b.label));
+  });
 
   return categories;
 }

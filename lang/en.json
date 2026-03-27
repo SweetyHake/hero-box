@@ -78,7 +78,8 @@
       "allCategories": "Categories",
       "testResult": "Generated: {name}",
       "createActor": "Create Actor",
-      "refreshTags": "Refresh Tags from Filenames"
+      "refreshTags": "Refresh Tags from Filenames",
+      "tagsTitle": "Tags"
     },
 
     "imagePicker": {
