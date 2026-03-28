@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Loads name lists from configured sources at world ready; exposes synchronous `generate()`.
+ */
+
 import { FLAGS } from '../constants/index.mjs';
 import { GENDER_TAGS, AGE_TAGS } from '../constants/tags.mjs';
 import { UI } from '../constants/ui.mjs';
@@ -6,12 +10,14 @@ import { getSourcePages } from '../utils/source.mjs';
 import { source } from './source.mjs';
 import { tag } from './tag.mjs';
 
+/** Picks random composed names from journal `NAME_DATA` keyed by tags and locale. */
 class NameGeneratorService {
   #nameMeta = [];
   #namesBySetId = new Map();
   #initialized = false;
   #raceTagIds = null;
 
+  /** Load all name sets from enabled data sources (world ready). */
   async initialize() {
     if (this.#initialized) return;
 
@@ -28,6 +34,10 @@ class NameGeneratorService {
     }
   }
 
+  /**
+   * @param {string[]} tags Image / criteria tags used to match name sets.
+   * @returns {string} Full generated name (or fallback).
+   */
   generate(tags) {
     if (!this.#initialized) {
       logger.warn('Name generator not initialized');
@@ -45,6 +55,7 @@ class NameGeneratorService {
     return this.#assembleWithHook(context, parts, tags);
   }
 
+  /** Clear caches and reload from sources (e.g. after data source changes). */
   async reload() {
     this.#nameMeta = [];
     this.#namesBySetId.clear();
@@ -53,6 +64,12 @@ class NameGeneratorService {
     await this.initialize();
   }
 
+  /**
+   * @param {{ race: string|null, subrace: string|null, gender: string|null, age: string|null }} context
+   * @param {Record<string, string|null>} parts
+   * @param {string[]} tags
+   * @returns {string}
+   */
   #assembleWithHook(context, parts, tags) {
     const nameData = {
       context: { ...context },
@@ -71,6 +88,10 @@ class NameGeneratorService {
     return this.#assemble(nameData);
   }
 
+  /**
+   * @param {{ parts: Record<string, string|null>, useNickname: boolean }} nameData
+   * @returns {string}
+   */
   #assemble(nameData) {
     const { parts, useNickname } = nameData;
     const { firstName, lastName, clan, nickname } = parts;
@@ -96,6 +117,10 @@ class NameGeneratorService {
     return segments.length ? segments.join(' ') : this.#fallbackName();
   }
 
+  /**
+   * @param {string[]} tags
+   * @returns {{ race: string|null, subrace: string|null, gender: string|null, age: string|null }}
+   */
   #parseContext(tags) {
     const raceTagIds = this.#getRaceTagIds();
 
@@ -118,7 +143,7 @@ class NameGeneratorService {
     };
   }
 
-  // lazy-load the set of race tag ids
+  /** @returns {Set<string>} */
   #getRaceTagIds() {
     if (!this.#raceTagIds) {
       this.#raceTagIds = new Set(tag.getRaces().map(t => t.id));
@@ -126,6 +151,11 @@ class NameGeneratorService {
     return this.#raceTagIds;
   }
 
+  /**
+   * @param {'firstName'|'lastName'|'clan'|'nickname'} type
+   * @param {{ race: string|null, subrace: string|null, gender: string|null, age: string|null }} context
+   * @returns {string|null}
+   */
   #pickName(type, context) {
     const matchingSets = this.#findMatchingSets(type, context);
     if (!matchingSets.length) return null;
@@ -137,6 +167,11 @@ class NameGeneratorService {
     return names.length ? names[Math.floor(Math.random() * names.length)] : null;
   }
 
+  /**
+   * @param {string} type Name component type.
+   * @param {object} context Parsed tag context.
+   * @returns {object[]}
+   */
   #findMatchingSets(type, context) {
     const raceTagIds = this.#getRaceTagIds();
 
@@ -164,7 +199,11 @@ class NameGeneratorService {
     });
   }
 
-    // prefer subrace-specific sets if available
+  /**
+   * @param {object[]} matchingSets
+   * @param {{ subrace: string|null }} context
+   * @returns {object[]}
+   */
   #preferSpecificSets(matchingSets, context) {
     const specificSets = matchingSets.filter(set => {
       const setSubraces = set.tags.filter(t => {
@@ -177,6 +216,7 @@ class NameGeneratorService {
     return specificSets.length > 0 ? specificSets : matchingSets;
   }
 
+  /** Populate `#nameMeta` and `#namesBySetId` from enabled sources. */
   async #loadFromSources() {
     const sources = source.getEnabledSources();
     if (!sources?.length) return;
@@ -209,6 +249,10 @@ class NameGeneratorService {
     }
   }
 
+  /**
+   * @param {object} nameData Journal `NAME_DATA` flag body.
+   * @returns {string[]}
+   */
   #extractTags(nameData) {
     if (nameData.tags) return nameData.tags;
     const tags = [];
@@ -218,10 +262,11 @@ class NameGeneratorService {
     return tags;
   }
 
-  // last resort when nothing matches
+  /** @returns {string} */
   #fallbackName() {
     return `${game.i18n.localize('cs-hero-box.actor.fallbackName')} #${foundry.utils.randomID(8)}`;
   }
 }
 
+/** Singleton name generator. */
 export const nameGenerator = new NameGeneratorService();

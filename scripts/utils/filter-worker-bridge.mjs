@@ -1,8 +1,12 @@
+/**
+ * @fileoverview Optional Web Worker bridge for large image-list filter/search in the data manager.
+ */
+
 import { logger } from './logger.mjs';
 
 const WORKER_THRESHOLD = 2000;
 
-// offloads heavy filtering to a web worker when the dataset is big enough
+/** Spawns an inline worker for tag/text filtering when item count exceeds threshold. */
 class FilterWorkerBridge {
   #worker = null;
   #pendingResolve = null;
@@ -10,11 +14,14 @@ class FilterWorkerBridge {
   #requestId = 0;
   #available = false;
 
+  /** True when worker was successfully created for large lists. */
   get shouldUseWorker() {
     return this.#available;
   }
 
-  // spin up the worker if we have enough items, otherwise skip it
+  /**
+   * @param {number} itemCount
+   */
   async initialize(itemCount) {
     if (itemCount < WORKER_THRESHOLD) {
       this.#available = false;
@@ -87,7 +94,9 @@ class FilterWorkerBridge {
     }
   }
 
-  // send items to the worker for filtering, returns null if worker is down
+  /**
+   * @returns {Promise<object[]|null>} Full items matching worker result, or null to use main-thread path.
+   */
   async filter(items, tagGroups, searchQuery) {
     if (!this.#available || !this.#worker) {
       return null;
@@ -121,7 +130,6 @@ class FilterWorkerBridge {
     });
   }
 
-  // kill the worker and clean up
   destroy() {
     if (this.#worker) {
       this.#worker.terminate();
@@ -133,4 +141,5 @@ class FilterWorkerBridge {
   }
 }
 
+/** Shared filter worker instance for images tab. */
 export const filterWorker = new FilterWorkerBridge();
