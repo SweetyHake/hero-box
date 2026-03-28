@@ -5,7 +5,6 @@ import { logger, getFlag } from '../utils/index.mjs';
 import { getSourcePages } from '../utils/source.mjs';
 import { source } from './source.mjs';
 import { tag } from './tag.mjs';
-import { DEFAULT_NAMES } from '../data/default-names.mjs';
 
 // generates random names based on race/gender/age tags
 class NameGeneratorService {
@@ -22,7 +21,6 @@ class NameGeneratorService {
 
     try {
       await this.#loadMetaFromSources();
-      this.#addDefaultNames();
       this.#initialized = true;
       logger.info(`Loaded ${this.#nameMeta.length} name sets (${this.#nameDataMap.size} with full data)`);
     } catch (error) {
@@ -78,7 +76,7 @@ class NameGeneratorService {
 
     Hooks.callAll('cs-hero-box.preGenerateName', nameData);
 
-    if (typeof nameData.result === 'string' && nameData.result.length > 0) {
+    if (typeof nameData.result === 'string' && nameData.result.length) {
       return nameData.result;
     }
 
@@ -86,7 +84,7 @@ class NameGeneratorService {
   }
 
   #assemble(nameData) {
-    const { context, parts, useNickname } = nameData;
+    const { parts, useNickname } = nameData;
     const { firstName, lastName, clan, nickname } = parts;
 
     const segments = [];
@@ -94,7 +92,7 @@ class NameGeneratorService {
     if (firstName) segments.push(firstName);
 
     if (useNickname && nickname) {
-      if (segments.length > 0 || lastName || clan) {
+      if (segments.length || lastName || clan) {
         segments.push(`«${nickname}»`);
       } else {
         segments.push(nickname);
@@ -311,83 +309,6 @@ class NameGeneratorService {
     if (nameData.races?.length) tags.push(...nameData.races);
     if (nameData.subraces?.length) tags.push(...nameData.subraces);
     return tags;
-  }
-
-  // register all the built-in default names from data/default-names.mjs
-  #addDefaultNames() {
-    for (const [race, raceData] of Object.entries(DEFAULT_NAMES)) {
-      if (typeof raceData !== 'object') continue;
-
-      const hasSubraces = Object.keys(raceData).some(key =>
-        typeof raceData[key] === 'object' && raceData[key]?.name
-      );
-
-      if (hasSubraces) {
-        for (const [subraceId, subraceData] of Object.entries(raceData)) {
-          if (typeof subraceData === 'object' && subraceData.name) {
-            this.#processRaceNames(race, subraceId, subraceData);
-          }
-        }
-      } else {
-        this.#processRaceNames(race, null, raceData);
-      }
-    }
-  }
-
-  // register names for a single race/subrace combo
-  #processRaceNames(race, subrace, data) {
-    const baseTags = subrace ? [race, subrace] : [race];
-
-    if (data.name) {
-      for (const [key, names] of Object.entries(data.name)) {
-        if (!Array.isArray(names)) continue;
-
-        const tags = [...baseTags];
-
-        if (key === GENDER_TAGS.MALE || key === GENDER_TAGS.FEMALE || key === AGE_TAGS.CHILD) {
-          tags.push(key);
-        } else if (key !== 'virtue') {
-          continue;
-        }
-
-        const id = `default:${race}:${subrace ?? ''}:name:${key}`;
-        this.#nameMeta.push({
-          id,
-          uuid: null,
-          tags,
-          type: 'firstName',
-          inlineNames: { ru: names },
-          namesResolved: null,
-        });
-      }
-
-      if (Array.isArray(data.name.virtue)) {
-        const id = `default:${race}:${subrace ?? ''}:virtue`;
-        this.#nameMeta.push({
-          id,
-          uuid: null,
-          tags: baseTags,
-          type: 'firstName',
-          inlineNames: { ru: data.name.virtue },
-          namesResolved: null,
-        });
-      }
-    }
-
-    const additionalTypes = ['lastName', 'clan', 'nickname'];
-    for (const type of additionalTypes) {
-      if (Array.isArray(data[type])) {
-        const id = `default:${race}:${subrace ?? ''}:${type}`;
-        this.#nameMeta.push({
-          id,
-          uuid: null,
-          tags: baseTags,
-          type,
-          inlineNames: { ru: data[type] },
-          namesResolved: null,
-        });
-      }
-    }
   }
 
   // last resort when nothing matches
