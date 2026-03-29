@@ -82,6 +82,19 @@
   background: var(--cs-hero-box-bg-primary);
 }
 
+.cs-hero-box-data-sources .cs-hero-box-hint__wiki {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cs-hero-box-spacing-sm);
+  margin: 0 0 var(--cs-hero-box-spacing-md) 0;
+}
+
+.cs-hero-box-data-sources .cs-hero-box-hint__wiki > i {
+  margin-top: 0.12em;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 .cs-hero-box-data-sources .notes {
   flex-shrink: 0;
   margin-bottom: var(--cs-hero-box-spacing-md);
@@ -635,6 +648,15 @@
 .cs-hero-box-data-manager__empty i {
   font-size: 3rem;
   margin-bottom: var(--cs-hero-box-spacing-lg);
+}
+
+.cs-hero-box-data-manager__empty-hint {
+  max-width: 28rem;
+  margin: var(--cs-hero-box-spacing-md) var(--cs-hero-box-spacing-sm) 0;
+  text-align: center;
+  font-size: var(--cs-hero-box-font-size-sm);
+  line-height: 1.45;
+  color: var(--cs-hero-box-text-muted);
 }
 
 /* bottom toolbar with selection info and action buttons */

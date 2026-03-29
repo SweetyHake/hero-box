@@ -26,6 +26,11 @@ export const PACKS = Object.freeze({
   DATA: `${MODULE_ID}.${MODULE_ID}-data`,
 });
 
+/** Links to official Hero Box documentation (wiki). */
+export const DOCS = Object.freeze({
+  CONTENT_PACKS_WIKI: 'https://github.com/cosmosaurs/hero-box/wiki/Content-Packs',
+});
+
 export const RANDOM_PORTRAIT_PATH = 'icons/svg/d20-highlight.svg';
 
 export const DEFAULT_IMAGE_DATA = Object.freeze({

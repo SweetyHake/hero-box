@@ -26,7 +26,7 @@
     },
 
     "button": {
-      "text": "Generate",
+      "text": "Hero in a Box",
       "tooltip": "Generate random actor using Hero in a Box",
       "headerLabel": "Hero in a Box Config"
     },
@@ -42,7 +42,11 @@
 
     "changelog": {
       "title": "Hero in a Box Update",
-      "doNotShow": "Don't show for this version"
+      "dismiss": "Don't show for this version"
+    },
+
+    "docs": {
+      "contentPacksHint": "Companion modules provide art, tags, and name lists — see <a href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\">Content Packs</a>."
     },
 
     "dataManager": {
@@ -216,7 +220,7 @@
       },
       "sourceActor": {
         "dropHint": "Drop Actor Here",
-        "hint": "Optional. Drop an actor to copy its stats and items to the new character.",
+        "hint": "Drop an actor to copy its stats and items to the new character (optional).",
         "wrongType": "Please drop an Actor."
       }
     },

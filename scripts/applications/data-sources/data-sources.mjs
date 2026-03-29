@@ -2,7 +2,7 @@
  * @fileoverview Configure enabled journal/compendium sources and trigger reindex + name reload.
  */
 
-import { MODULE_ID, FLAGS, PATHS } from '../../constants/index.mjs';
+import { MODULE_ID, FLAGS, PATHS, DOCS } from '../../constants/index.mjs';
 import { journalHasModuleData } from '../../utils/source.mjs';
 import { tagIndex, tag, source, nameGenerator } from '../../services/index.mjs';
 import { BaseFormApplication } from '../base/base.mjs';
@@ -57,6 +57,7 @@ export class DataSources extends BaseFormApplication {
 
     return {
       dataSources: allSources.map((s, index) => source.enrichSourceData(s, index, total)),
+      contentPacksHintHtml: game.i18n.format('cs-hero-box.docs.contentPacksHint', { url: DOCS.CONTENT_PACKS_WIKI }),
       buttons: [
         { type: 'submit', icon: 'fa-solid fa-save', label: 'Save' },
       ],

@@ -100,6 +100,7 @@
             <div class="cs-hero-box-data-manager__empty">
               <i class="fas fa-images"></i>
               <p>{{localize "cs-hero-box.dataManager.noImages"}}</p>
+              <p class="cs-hero-box-data-manager__empty-hint">{{{contentPacksHintHtml}}}</p>
             </div>
           {{/unless}}
         </div>
@@ -167,7 +168,11 @@
               {{/each}}
             </div>
           {{else}}
-            <div class="cs-hero-box-data-manager__empty"><i class="fas fa-signature"></i><p>{{localize "cs-hero-box.dataManager.noSets"}}</p></div>
+            <div class="cs-hero-box-data-manager__empty">
+              <i class="fas fa-signature"></i>
+              <p>{{localize "cs-hero-box.dataManager.noSets"}}</p>
+              <p class="cs-hero-box-data-manager__empty-hint">{{{contentPacksHintHtml}}}</p>
+            </div>
           {{/if}}
         </main>
       {{/if}}
@@ -192,7 +197,11 @@
               {{/each}}
             </div>
           {{else}}
-            <div class="cs-hero-box-data-manager__empty"><i class="fas fa-tags"></i><p>{{localize "cs-hero-box.dataManager.noTags"}}</p></div>
+            <div class="cs-hero-box-data-manager__empty">
+              <i class="fas fa-tags"></i>
+              <p>{{localize "cs-hero-box.dataManager.noTags"}}</p>
+              <p class="cs-hero-box-data-manager__empty-hint">{{{contentPacksHintHtml}}}</p>
+            </div>
           {{/if}}
         </main>
       {{/if}}

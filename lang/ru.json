@@ -45,6 +45,10 @@
       "dismiss": "Не показывать до следующего обновления"
     },
 
+    "docs": {
+      "contentPacksHint": "Дополнительные модули дают изображения, теги и наборы имён — см. <a href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\"> модули-расширения</a>."
+    },
+
     "dataManager": {
       "title": "Менеджер данных",
       "tabs": {

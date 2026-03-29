@@ -2,7 +2,7 @@
  * @fileoverview Tabbed UI for images, names, tags; optional picker mode for selecting indexed art.
  */
 
-import { MODULE_ID, SETTINGS, PATHS } from '../../constants/index.mjs';
+import { MODULE_ID, SETTINGS, PATHS, DOCS } from '../../constants/index.mjs';
 import { TAB } from '../../constants/ui.mjs';
 import { getSetting, setSetting } from '../../settings.mjs';
 import { tagIndex, source } from '../../services/index.mjs';
@@ -184,6 +184,7 @@ export class DataManager extends BaseApplication {
       searchQuery: this.#tabs[this.#activeTab].searchQuery,
       pickerMode: this.#pickerMode,
       hasFilters: this.#tabs[this.#activeTab].hasFilters,
+      contentPacksHintHtml: game.i18n.format('cs-hero-box.docs.contentPacksHint', { url: DOCS.CONTENT_PACKS_WIKI }),
     };
 
     const tabContext = await this.#tabs[this.#activeTab].prepareContext();
