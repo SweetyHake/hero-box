@@ -5,8 +5,11 @@
 import { NAME_TYPES } from '../../constants/ui.mjs';
 import { logger } from '../../utils/index.mjs';
 import { buildSidebarCategories, handleTagToggle } from '../../utils/sidebar.mjs';
-import { nameGenerator, tag } from '../../services/index.mjs';
+import { tag } from '../../services/index.mjs';
+import { nameGenerator } from '../../services/index.mjs';
 import { sortByLabel } from '../../utils/sort.mjs';
+import { getSetting, setSetting } from '../../settings.mjs';
+import { SETTINGS } from '../../constants/settings.mjs';
 
 /** Tab logic for name sets; `app` is the parent DataManager. */
 export class NamesTab {
@@ -181,6 +184,7 @@ export class NamesTab {
 
       if (confirmed) {
         await page.delete();
+        await nameGenerator.reload();
         this.invalidateCache();
         this.#app.render();
       }
@@ -226,17 +230,23 @@ export class NamesTab {
     if (group) {
       const category = group.dataset.category;
       group.classList.toggle('collapsed');
-
       if (group.classList.contains('collapsed')) {
         this.#collapsedGroups.add(category);
       } else {
         this.#collapsedGroups.delete(category);
       }
+      this.#saveCollapsedState();
     }
   }
 
   /** Re-apply `.collapsed` on sidebar groups after re-render. */
   #restoreCollapsedGroups() {
+    try {
+      const saved = getSetting(SETTINGS.COLLAPSED_DATA_MANAGER);
+      const tabCollapsed = saved?.names ?? [];
+      this.#collapsedGroups = new Set(tabCollapsed);
+    } catch {}
+
     for (const category of this.#collapsedGroups) {
       const group = this.#app.querySelector(`.cs-hero-box-data-manager__tag-group[data-category="${category}"]`);
       if (group) {
@@ -246,5 +256,13 @@ export class NamesTab {
         });
       }
     }
+  }
+
+  #saveCollapsedState() {
+    try {
+      const saved = getSetting(SETTINGS.COLLAPSED_DATA_MANAGER) ?? {};
+      saved.names = Array.from(this.#collapsedGroups);
+      setSetting(SETTINGS.COLLAPSED_DATA_MANAGER, saved);
+    } catch {}
   }
 }

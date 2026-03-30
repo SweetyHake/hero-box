@@ -142,7 +142,10 @@ class ActorService {
       }
     }
 
-    const name = nameGenerator.generate(imageData.tags);
+    const nicknameChance = (criteria.nicknameChance ?? 50) / 100;
+    const nicknameOnlyChance = (criteria.nicknameOnlyChance ?? 0) / 100;
+    const noLastNameChance = (criteria.noLastNameChance ?? 0) / 100;
+    const name = nameGenerator.generate(imageData.tags, nicknameChance, nicknameOnlyChance, noLastNameChance);
     const scale = imageData.scale ?? 1;
 
     token.updateSource({
@@ -201,6 +204,7 @@ class ActorService {
       gender: input.gender ?? [],
       age: input.age ?? [],
       role: input.role ?? [],
+      other: input.other ?? [],
     };
 
     if (input.race?.length) {
@@ -229,6 +233,7 @@ class ActorService {
       gender: [],
       age: [],
       role: [],
+      other: [],
     };
 
     const genderIds = new Set(Object.values(GENDER_TAGS));
@@ -248,6 +253,8 @@ class ActorService {
             groups.subrace.push(tagId);
           } else if (tagData.category === TAG_CATEGORY.ROLE) {
             groups.role.push(tagId);
+          } else {
+            groups.other.push(tagId);
           }
         }
       }
@@ -294,6 +301,9 @@ class ActorService {
           selectedImageUuids: input.selectedImageUuids ?? [],
           mode: isRandom ? TOKEN_MODE.RANDOM : TOKEN_MODE.FIXED,
           fixedImageUuid: null,
+          nicknameChance: input.nicknameChance ?? 50,
+          nicknameOnlyChance: input.nicknameOnlyChance ?? 0,
+          noLastNameChance: input.noLastNameChance ?? 0,
         },
       },
     };
@@ -308,7 +318,10 @@ class ActorService {
       };
     } else {
       const imageTags = imageData.tags ?? [];
-      const name = nameGenerator.generate(imageTags);
+      const nicknameChance = (input.nicknameChance ?? 50) / 100;
+      const nicknameOnlyChance = (input.nicknameOnlyChance ?? 0) / 100;
+      const noLastNameChance = (input.noLastNameChance ?? 0) / 100;
+      const name = nameGenerator.generate(imageTags, nicknameChance, nicknameOnlyChance, noLastNameChance);
       const scale = imageData.scale ?? 1;
 
       actorData.name = name;
