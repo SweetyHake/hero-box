@@ -13,8 +13,11 @@ The **core module** does **not** ship with portraits, predefined tag sets, or na
 Pack and extension list: **[Hero in a Box — Content Packs](https://github.com/cosmosaurs/hero-box/wiki/Content-Packs)**
 
 ## Installation
-
-Install and enable **Hero in a Box** from the Foundry VTT module browser, or use the manifest URL from your release page. After enabling, open **Module Settings** to add data sources (journals/compendiums). Install at least one **[content pack](https://github.com/cosmosaurs/hero-box/wiki/Content-Packs)** module if you want ready-made tags, images, and names.
+In FVTT modules tab, click _Install module_ button, and then insert manifest link in the input in the bottom part of the window:
+```txt
+https://github.com/cosmosaurs/hero-box/releases/latest/download/module.json
+```
+After enabling, open **Module Settings** to add data sources (journals/compendiums). Install at least one **[content pack](https://github.com/cosmosaurs/hero-box/wiki/Content-Packs)** module to get ready-made tags, images, and names.
 
 ## Support
 
